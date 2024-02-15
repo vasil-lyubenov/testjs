@@ -29,6 +29,7 @@ export class FileData extends HTMLElement {
   fileData = [];
 
   socket = null;
+  pollingInterval = null;
 
   constructor() {
     super();
@@ -41,9 +42,6 @@ export class FileData extends HTMLElement {
 
   openFileDataSocket() {
     this.socket = io("http://localhost:8082");
-    // some info:
-    // -- send messages with `this.socket.emit('message', 'test message');`
-    // -- listen for messages with `this.socket.on('message', msg => ...);`
 
     console.log(this.socket);
 
@@ -64,15 +62,35 @@ export class FileData extends HTMLElement {
     this.pidInputValue = target.value;
   };
 
+  // startPolling = () => {
+  //   console.log("start polling");
+  //   console.log(this.pidInputValue);
+  //   this.pollingInterval = setInterval(async () => {
+  //     const processList = await psList();
+  //     const process = processList.find(p => p.pid === Number(this.pidInputValue));
+  //     if (process) {
+  //       this.socket.emit('message', `CPU: ${process.cpu}, Memory: ${process.memory}`);
+  //     }
+  //   }, 1000);
+  // };
+
+  // stopPolling = () => {
+  //   console.log("stop polling");
+  //   clearInterval(this.pollingInterval);
+  // };
+
+
   startPolling = () => {
     console.log("start polling");
     console.log(this.pidInputValue);
-    // ...
+    // Start polling logic here
+    this.socket.emit("start-polling", this.pidInputValue);
   };
 
   stopPolling = () => {
     console.log("stop polling");
-    // ...
+    // Stop polling logic here
+    this.socket.emit("stop-polling");
   };
 
   render() {
@@ -80,4 +98,4 @@ export class FileData extends HTMLElement {
   }
 }
 
-customElements.define(FileData.selector, FileData);
+customElements.define(FileData.selector, FileData)

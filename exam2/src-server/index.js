@@ -22,12 +22,19 @@ io.on('connection', function (socket) {
 
   socket.on('start-polling', function (msg) {
     console.log('start-polling', msg);
-    // ...
+    pollingInterval = setInterval(async () => {
+      const processList = await psList();
+      const process = processList.find(p => p.pid === Number(msg));
+      if (process) {
+        socket.emit('message', `CPU: ${process.cpu}, Memory: ${process.memory}`);
+      }
+    }, 1000);
     socket.emit('message', 'test message');
   });
   socket.on('stop-polling', function () {
     console.log('stop-polling');
-    // ...
+    clearInterval(pollingInterval);
+
   });
 });
 
